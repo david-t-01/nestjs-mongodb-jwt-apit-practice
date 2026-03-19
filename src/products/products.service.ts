@@ -6,8 +6,8 @@ import { CreateProductDto } from '@/products/dto/create-product.dto';
 import { Product, ProductDocument } from '@/products/entities/product.entity';
 
 interface PaginationParams {
-  page?: number;
   limit?: number;
+  page?: number;
   sortBy?: string;
 }
 
@@ -18,8 +18,8 @@ interface FilterParams extends PaginationParams {
 
 interface SearchCriteriaParams extends PaginationParams {
   name?: string;
-  price_min?: number;
   price_max?: number;
+  price_min?: number;
   skus?: string[];
   status?: string;
 }
@@ -29,12 +29,9 @@ export class ProductsService {
   constructor(
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
     private readonly storageService: StorageService,
-  ) { }
+  ) {}
 
-  async create(
-    dto: Omit<CreateProductDto, 'image'>,
-    file: Express.Multer.File,
-  ): Promise<Product> {
+  async create(dto: Omit<CreateProductDto, 'image'>, file: Express.Multer.File): Promise<Product> {
     const fileName = await this.storageService.saveFile(file);
 
     // TODO: reemplazar por el servicio de generación de ID de imagen
@@ -54,11 +51,11 @@ export class ProductsService {
   }
 
   async searchByCriteria(params: SearchCriteriaParams = {}): Promise<Product[]> {
-    const { name, price_min, price_max, status = 'active', skus, page, limit, sortBy } = params;
+    const { limit, name, page, price_max, price_min, skus, sortBy, status = 'active' } = params;
     const query: Record<string, any> = {};
 
     if (name) {
-      query.name = { $regex: name, $options: 'i' };
+      query.name = { $options: 'i', $regex: name };
     }
 
     if (price_min !== undefined || price_max !== undefined) {
@@ -69,28 +66,28 @@ export class ProductsService {
 
     if (skus?.length) {
       query.$or = skus.map((pattern) => ({
-        sku: { $regex: `^${pattern}`, $options: 'i' },
+        sku: { $options: 'i', $regex: `^${pattern}` },
       }));
     }
 
     query.status = status;
 
-    return this.applyPagination(query, { page, limit, sortBy });
+    return this.applyPagination(query, { limit, page, sortBy });
   }
 
   async filter(params: FilterParams = {}): Promise<Product[]> {
-    const { sku, status = 'active', page, limit, sortBy } = params;
+    const { limit, page, sku, sortBy, status = 'active' } = params;
     const query: Record<string, any> = {};
 
     if (sku) query.sku = sku;
     query.status = status;
 
-    return this.applyPagination(query, { page, limit, sortBy });
+    return this.applyPagination(query, { limit, page, sortBy });
   }
 
   private applyPagination(
     query: Record<string, any>,
-    { page = 1, limit = 10, sortBy }: PaginationParams,
+    { limit = 10, page = 1, sortBy }: PaginationParams,
   ): Promise<Product[]> {
     const skip = (page - 1) * limit;
     let chain = this.productModel.find(query).skip(skip).limit(limit);

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { extname, join } from 'path';
-import { writeFile, mkdir } from 'fs/promises';
+import { mkdir, writeFile } from 'fs/promises';
 
 @Injectable()
 export class StorageService {

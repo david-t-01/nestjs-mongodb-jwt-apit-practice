@@ -12,14 +12,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiConsumes,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { memoryStorage } from 'multer';
 import { ImageFileValidationPipe } from '../storage/pipes/image-file-validation.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -31,14 +24,14 @@ import { FindProductsQueryDto } from './dto/search-products.dto';
 @ApiTags('products')
 @Controller('products')
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a product with an image' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({ type: CreateProductDto })
-  @ApiResponse({ status: 201, description: 'Product created', type: Product })
-  @ApiResponse({ status: 400, description: 'Bad request / Invalid file type' })
+  @ApiResponse({ description: 'Product created', status: 201, type: Product })
+  @ApiResponse({ description: 'Bad request / Invalid file type', status: 400 })
   @UseInterceptors(FileInterceptor('image', { storage: memoryStorage() }))
   async create(
     @Body() dto: Omit<CreateProductDto, 'image'>,
@@ -50,8 +43,8 @@ export class ProductsController {
 
   @Get(':id')
   @ApiResponse({
-    status: 200,
     description: 'The found record',
+    status: 200,
     type: Product,
   })
   async findOne(@Param('id') id: string): Promise<Product | null> {
@@ -60,27 +53,29 @@ export class ProductsController {
 
   @Get()
   @ApiResponse({
-    status: 200,
     description: 'List of products',
+    status: 200,
     type: [Product],
   })
+  @ApiResponse({ description: 'Bad request / Invalid search parameters', status: 400 })
   async search(
     @Query(
       new ValidationPipe({
-        whitelist: true, // elimina campos no definidos
         forbidNonWhitelisted: true, // error si envían extras
         transform: true, // convierte tipos (string → number)
-      })
-    ) query: FindProductsQueryDto
+        whitelist: true, // elimina campos no definidos
+      }),
+    )
+    query: FindProductsQueryDto,
   ): Promise<Product[]> {
-    const { name, sku, status, skus, price_min, price_max, page, limit, sortBy } = query;
+    const { limit, name, page, price_max, price_min, sku, skus, sortBy, status } = query;
 
     if (price_min !== undefined || price_max !== undefined || name || skus) {
-      return this.productsService.searchByCriteria({ name, price_min, price_max, skus, status, page, limit, sortBy });
+      return this.productsService.searchByCriteria({ limit, name, page, price_max, price_min, skus, sortBy, status });
     }
 
     if (status || sku) {
-      return this.productsService.filter({ sku, status, page, limit, sortBy });
+      return this.productsService.filter({ limit, page, sku, sortBy, status });
     }
 
     throw new BadRequestException('Bad request / Invalid search');

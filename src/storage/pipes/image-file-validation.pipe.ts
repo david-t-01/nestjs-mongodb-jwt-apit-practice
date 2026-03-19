@@ -1,15 +1,6 @@
-import {
-  BadRequestException,
-  Injectable,
-  PipeTransform,
-} from '@nestjs/common';
+import { BadRequestException, Injectable, PipeTransform } from '@nestjs/common';
 
-const ALLOWED_MIME_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'image/webp',
-];
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
 
 @Injectable()
 export class ImageFileValidationPipe implements PipeTransform {
@@ -19,9 +10,7 @@ export class ImageFileValidationPipe implements PipeTransform {
     }
 
     if (!ALLOWED_MIME_TYPES.includes(file.mimetype)) {
-      throw new BadRequestException(
-        `Invalid file type "${file.mimetype}". Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`,
-      );
+      throw new BadRequestException(`Invalid file type "${file.mimetype}". Allowed: ${ALLOWED_MIME_TYPES.join(', ')}`);
     }
 
     return file;

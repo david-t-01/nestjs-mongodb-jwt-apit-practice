@@ -8,10 +8,9 @@ import { ProductsModule } from './products/products.module';
     ConfigModule.forRoot({ isGlobal: true }),
     MongooseModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) =>
-        ({ uri: config.get<string>('MONGODB_URI') }),
+      useFactory: (config: ConfigService) => ({ uri: config.get<string>('MONGODB_URI') }),
     }),
     ProductsModule,
   ],
 })
-export class AppModule { }
+export class AppModule {}

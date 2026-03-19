@@ -14,7 +14,8 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "test": "jest"
+    "test": "jest",
+    "prepare": "husky"
   },
   "dependencies": {
     "@nestjs/common": "11.1.17",
@@ -33,11 +34,14 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.5.0",
+    "@commitlint/config-conventional": "^20.5.0",
     "@eslint/eslintrc": "3.3.5",
     "@eslint/js": "9.39.4",
     "@nestjs/cli": "11.0.16",
     "@nestjs/schematics": "11.0.9",
     "@nestjs/testing": "11.1.16",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@types/express": "5.0.6",
     "@types/jest": "30.0.0",
     "@types/multer": "^2.1.0",
@@ -45,8 +49,11 @@
     "@types/supertest": "7.2.0",
     "eslint": "9.39.4",
     "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-perfectionist": "^5.7.0",
     "eslint-plugin-prettier": "5.5.5",
+    "eslint-plugin-sort-keys-fix": "^1.1.2",
     "globals": "17.4.0",
+    "husky": "^9.1.7",
     "jest": "30.3.0",
     "prettier": "3.8.1",
     "supertest": "7.2.2",

@@ -1,4 +1,4 @@
-import { IsOptional, IsString, IsInt, Min, IsArray, Validate, IsIn, IsEnum } from 'class-validator';
+import { IsArray, IsEnum, IsIn, IsInt, IsOptional, IsString, Min, Validate } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
 
 export enum StatusField {
@@ -13,11 +13,7 @@ export class FindProductsQueryDto {
 
   @IsOptional()
   @IsString()
-  @Transform(({ value }) =>
-    typeof value === 'string'
-      ? value.replace(/[^a-zA-Z0-9-]/g, '')
-      : value
-  )
+  @Transform(({ value }) => (typeof value === 'string' ? value.replace(/[^a-zA-Z0-9-]/g, '') : value))
   sku?: string;
 
   @IsOptional()
@@ -29,11 +25,7 @@ export class FindProductsQueryDto {
   @Transform(({ value }) => {
     const values = Array.isArray(value) ? value : [value];
 
-    return values.map(v =>
-      typeof v === 'string'
-        ? v.replace(/[^a-zA-Z0-9-]/g, '')
-        : v
-    );
+    return values.map((v) => (typeof v === 'string' ? v.replace(/[^a-zA-Z0-9-]/g, '') : v));
   })
   skus?: string[];
 
@@ -57,7 +49,7 @@ export class FindProductsQueryDto {
 
   @IsOptional()
   @IsString({
-    message: 'sortBy must be one of name, sku'
+    message: 'sortBy must be one of name, sku',
   })
   @IsIn(['name', 'sku'])
   sortBy?: string;
