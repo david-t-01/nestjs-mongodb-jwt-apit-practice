@@ -7,7 +7,6 @@ export type ProductDocument = HydratedDocument<Product>;
 @Schema({
   timestamps: true,
   toJSON: {
-    virtuals: true,
     transform: (_doc: unknown, ret: Record<string, unknown>) => {
       ret.id = ret._id;
       delete ret._id;
@@ -15,9 +14,9 @@ export type ProductDocument = HydratedDocument<Product>;
       delete ret.createdAt;
       delete ret.updatedAt;
     },
+    virtuals: true,
   },
   toObject: {
-    virtuals: true,
     transform: (_doc: unknown, ret: Record<string, unknown>) => {
       ret.id = ret._id;
       delete ret._id;
@@ -25,30 +24,55 @@ export type ProductDocument = HydratedDocument<Product>;
       delete ret.createdAt;
       delete ret.updatedAt;
     },
+    virtuals: true,
   },
 })
 export class Product {
-  @ApiProperty({ example: 'Wireless Mouse', description: 'The name of the product' })
-  @Prop({ required: true })
+  @ApiProperty({
+    description: 'The name of the product',
+    example: 'Wireless Mouse',
+  })
+  @Prop({
+    required: true,
+  })
   name: string;
 
-  @ApiProperty({ example: 'WM-001', description: 'Stock Keeping Unit' })
-  @Prop({ required: true, unique: true })
+  @ApiProperty({
+    description: 'Stock Keeping Unit',
+    example: 'WM-001',
+  })
+  @Prop({
+    required: true,
+    unique: true,
+  })
   sku: string;
 
   @ApiProperty({
-    example: '507f1f77bcf86cd799439011',
     description: 'The Mongo ObjectId referencing the stored image',
+    example: '507f1f77bcf86cd799439011',
   })
-  @Prop({ type: Types.ObjectId })
+  @Prop({
+    type: Types.ObjectId,
+  })
   imageId: Types.ObjectId;
 
-  @ApiProperty({ example: 29.99, description: 'The price of the product' })
-  @Prop({ required: true })
+  @ApiProperty({
+    description: 'The price of the product',
+    example: 29.99,
+  })
+  @Prop({
+    required: true,
+  })
   price: number;
 
-  @ApiProperty({ example: 'active', description: 'The status of the product' })
-  @Prop({ required: true, default: 'active' })
+  @ApiProperty({
+    description: 'The status of the product',
+    example: 'active',
+  })
+  @Prop({
+    default: 'active',
+    required: true,
+  })
   status: string;
 }
 

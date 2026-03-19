@@ -1,15 +1,15 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { getModelToken } from "@nestjs/mongoose";
-import { ProductsService } from "@/products/products.service";
-import { Product } from "@/products/entities/product.entity";
-import { StorageService } from "@/storage/storage.service";
+import { Test, TestingModule } from '@nestjs/testing';
+import { getModelToken } from '@nestjs/mongoose';
+import { ProductsService } from '@/products/products.service';
+import { Product } from '@/products/entities/product.entity';
+import { StorageService } from '@/storage/storage.service';
 
 function createMockModel() {
   const chainable = {
-    sort: jest.fn().mockReturnThis(),
-    skip: jest.fn().mockReturnThis(),
-    limit: jest.fn().mockReturnThis(),
     exec: jest.fn().mockResolvedValue([]),
+    limit: jest.fn().mockReturnThis(),
+    skip: jest.fn().mockReturnThis(),
+    sort: jest.fn().mockReturnThis(),
   };
 
   const model: any = {
@@ -17,13 +17,13 @@ function createMockModel() {
     ...chainable,
   };
 
-  return { model, chainable };
+  return { chainable, model };
 }
 
-describe("ProductsService — search & filter", () => {
+describe('ProductsService — search & filter', () => {
   let service: ProductsService;
-  let model: ReturnType<typeof createMockModel>["model"];
-  let chainable: ReturnType<typeof createMockModel>["chainable"];
+  let model: ReturnType<typeof createMockModel>['model'];
+  let chainable: ReturnType<typeof createMockModel>['chainable'];
 
   beforeEach(async () => {
     const mock = createMockModel();
@@ -43,120 +43,120 @@ describe("ProductsService — search & filter", () => {
 
   afterEach(() => jest.clearAllMocks());
 
-  describe("searchByCriteria() — criteria-based", () => {
-    it("should search by name with case-insensitive regex", async () => {
-      await service.searchByCriteria({ name: "apple" });
+  describe('searchByCriteria() — criteria-based', () => {
+    it('should search by name with case-insensitive regex', async () => {
+      await service.searchByCriteria({ name: 'apple' });
 
       const query = model.find.mock.calls[0][0];
-      expect(query.name).toEqual({ $regex: "apple", $options: "i" });
+      expect(query.name).toEqual({ $options: 'i', $regex: 'apple' });
     });
 
-    it("should search by price range (min and max)", async () => {
-      await service.searchByCriteria({ price_min: 100, price_max: 500 });
+    it('should search by price range (min and max)', async () => {
+      await service.searchByCriteria({ price_max: 500, price_min: 100 });
 
       const query = model.find.mock.calls[0][0];
       expect(query.price).toEqual({ $gte: 100, $lte: 500 });
     });
 
-    it("should search by price_min only", async () => {
+    it('should search by price_min only', async () => {
       await service.searchByCriteria({ price_min: 50 });
 
       const query = model.find.mock.calls[0][0];
       expect(query.price).toEqual({ $gte: 50 });
     });
 
-    it("should search by price_max only", async () => {
+    it('should search by price_max only', async () => {
       await service.searchByCriteria({ price_max: 200 });
 
       const query = model.find.mock.calls[0][0];
       expect(query.price).toEqual({ $lte: 200 });
     });
 
-    it("should search by skus patterns using $or with $regex", async () => {
-      await service.searchByCriteria({ skus: ["MT-", "HJM"] });
+    it('should search by skus patterns using $or with $regex', async () => {
+      await service.searchByCriteria({ skus: ['MT-', 'HJM'] });
 
       const query = model.find.mock.calls[0][0];
       expect(query.$or).toEqual([
-        { sku: { $regex: "^MT-", $options: "i" } },
-        { sku: { $regex: "^HJM", $options: "i" } },
+        { sku: { $options: 'i', $regex: '^MT-' } },
+        { sku: { $options: 'i', $regex: '^HJM' } },
       ]);
     });
 
-    it("should search by single sku pattern", async () => {
-      await service.searchByCriteria({ skus: ["WM-"] });
+    it('should search by single sku pattern', async () => {
+      await service.searchByCriteria({ skus: ['WM-'] });
 
       const query = model.find.mock.calls[0][0];
-      expect(query.$or).toEqual([{ sku: { $regex: "^WM-", $options: "i" } }]);
+      expect(query.$or).toEqual([{ sku: { $options: 'i', $regex: '^WM-' } }]);
     });
 
-    it("should combine name, price range and skus", async () => {
+    it('should combine name, price range and skus', async () => {
       await service.searchByCriteria({
-        name: "mouse",
-        price_min: 10,
+        name: 'mouse',
         price_max: 100,
-        skus: ["MT-"],
+        price_min: 10,
+        skus: ['MT-'],
       });
 
       const query = model.find.mock.calls[0][0];
-      expect(query.name).toEqual({ $regex: "mouse", $options: "i" });
+      expect(query.name).toEqual({ $options: 'i', $regex: 'mouse' });
       expect(query.price).toEqual({ $gte: 10, $lte: 100 });
-      expect(query.$or).toEqual([{ sku: { $regex: "^MT-", $options: "i" } }]);
+      expect(query.$or).toEqual([{ sku: { $options: 'i', $regex: '^MT-' } }]);
     });
 
-    it("should always include status=active by default", async () => {
+    it('should always include status=active by default', async () => {
       await service.searchByCriteria({});
 
       const query = model.find.mock.calls[0][0];
-      expect(query.status).toBe("active");
+      expect(query.status).toBe('active');
     });
 
-    it("should allow overriding status", async () => {
-      await service.searchByCriteria({ status: "inactive" });
+    it('should allow overriding status', async () => {
+      await service.searchByCriteria({ status: 'inactive' });
 
       const query = model.find.mock.calls[0][0];
-      expect(query.status).toBe("inactive");
+      expect(query.status).toBe('inactive');
     });
   });
 
-  describe("pagination, sorting & limit", () => {
-    it("should apply default limit when not specified", async () => {
-      await service.searchByCriteria({ name: "test" });
+  describe('pagination, sorting & limit', () => {
+    it('should apply default limit when not specified', async () => {
+      await service.searchByCriteria({ name: 'test' });
 
       expect(chainable.limit).toHaveBeenCalledWith(10);
     });
 
-    it("should apply provided limit", async () => {
-      await service.searchByCriteria({ name: "test", limit: 50 });
+    it('should apply provided limit', async () => {
+      await service.searchByCriteria({ limit: 50, name: 'test' });
 
       expect(chainable.limit).toHaveBeenCalledWith(50);
     });
 
-    it("should apply skip based on page and limit", async () => {
-      await service.searchByCriteria({ name: "test", page: 3, limit: 20 });
+    it('should apply skip based on page and limit', async () => {
+      await service.searchByCriteria({ limit: 20, name: 'test', page: 3 });
 
       expect(chainable.skip).toHaveBeenCalledWith(40);
     });
 
-    it("should default to page 1 (skip 0)", async () => {
-      await service.searchByCriteria({ name: "test" });
+    it('should default to page 1 (skip 0)', async () => {
+      await service.searchByCriteria({ name: 'test' });
 
       expect(chainable.skip).toHaveBeenCalledWith(0);
     });
 
-    it("should apply sort by name", async () => {
-      await service.searchByCriteria({ name: "test", sortBy: "name" });
+    it('should apply sort by name', async () => {
+      await service.searchByCriteria({ name: 'test', sortBy: 'name' });
 
       expect(chainable.sort).toHaveBeenCalledWith({ name: 1 });
     });
 
-    it("should apply sort by sku", async () => {
-      await service.searchByCriteria({ name: "test", sortBy: "sku" });
+    it('should apply sort by sku', async () => {
+      await service.searchByCriteria({ name: 'test', sortBy: 'sku' });
 
       expect(chainable.sort).toHaveBeenCalledWith({ sku: 1 });
     });
 
-    it("should not call sort when sortBy is not provided", async () => {
-      await service.searchByCriteria({ name: "test" });
+    it('should not call sort when sortBy is not provided', async () => {
+      await service.searchByCriteria({ name: 'test' });
 
       expect(chainable.sort).not.toHaveBeenCalled();
     });
