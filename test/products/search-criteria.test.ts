@@ -103,10 +103,18 @@ describe("ProductsService — search & filter", () => {
       expect(query.$or).toEqual([{ sku: { $regex: "^MT-", $options: "i" } }]);
     });
 
-    it("should return empty filter when no criteria provided", async () => {
+    it("should always include status=active by default", async () => {
       await service.searchByCriteria({});
 
-      expect(model.find).toHaveBeenCalledWith({});
+      const query = model.find.mock.calls[0][0];
+      expect(query.status).toBe("active");
+    });
+
+    it("should allow overriding status", async () => {
+      await service.searchByCriteria({ status: "inactive" });
+
+      const query = model.find.mock.calls[0][0];
+      expect(query.status).toBe("inactive");
     });
   });
 

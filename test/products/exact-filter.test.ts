@@ -68,10 +68,10 @@ describe("ProductsService — filter() exact match", () => {
     );
   });
 
-  it("should return empty filter when no params provided", async () => {
+  it("should default to status=active when no params provided", async () => {
     await service.filter({});
 
-    expect(model.find).toHaveBeenCalledWith({});
+    expect(model.find).toHaveBeenCalledWith({ status: "active" });
   });
 
   it("should support pagination, sorting & limit", async () => {

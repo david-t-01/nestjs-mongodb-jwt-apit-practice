@@ -1,12 +1,15 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
   Param,
   ParseFilePipe,
   Post,
+  Query,
   UploadedFile,
   UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
@@ -22,6 +25,7 @@ import { ImageFileValidationPipe } from '../storage/pipes/image-file-validation.
 import { CreateProductDto } from './dto/create-product.dto';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './products.service';
+import { FindProductsQueryDto } from './dto/search-products.dto';
 
 @ApiBearerAuth()
 @ApiTags('products')
@@ -52,5 +56,33 @@ export class ProductsController {
   })
   async findOne(@Param('id') id: string): Promise<Product | null> {
     return this.productsService.findOne(id);
+  }
+
+  @Get()
+  @ApiResponse({
+    status: 200,
+    description: 'List of products',
+    type: [Product],
+  })
+  async search(
+    @Query(
+      new ValidationPipe({
+        whitelist: true, // elimina campos no definidos
+        forbidNonWhitelisted: true, // error si envían extras
+        transform: true, // convierte tipos (string → number)
+      })
+    ) query: FindProductsQueryDto
+  ): Promise<Product[]> {
+    const { name, sku, status, skus, price_min, price_max, page, limit, sortBy } = query;
+
+    if (price_min !== undefined || price_max !== undefined || name || skus) {
+      return this.productsService.searchByCriteria({ name, price_min, price_max, skus, status, page, limit, sortBy });
+    }
+
+    if (status || sku) {
+      return this.productsService.filter({ sku, status, page, limit, sortBy });
+    }
+
+    throw new BadRequestException('Bad request / Invalid search');
   }
 }
