@@ -8,19 +8,29 @@ Develop a Node.js API using NestJS, connected to MongoDB with @nestjs/mongoose, 
 
 Create data Models
 
-1. Product: must include name, SKU, picture (file upload), and price.
+1. ✅ Product: must include name, SKU, picture (file upload), and price.
 2. Order: must include an identifier, client name, total, and the list of products.
 
 Endpoints
 
-1. `/products`
-   1. Create a product.
-   2. Retrieve a product by its identifier.
-   3. Search products with support for:
-      1. Pagination
-      2. Sorting
-      3. Exact match filtering
-      4. Criteria-based search
+1. ✅ `/products`
+   1. ✅ Create a product.
+   2. ✅ Retrieve a product by its identifier.
+   3. ✅ Search products with support for:
+      1. Exact match filtering
+         1. by sku `?sku=MT-001`
+         1. by status `?status=inactive`
+      2. Criteria-based search
+         1. by price range `?price_min=100&price_max=500`
+         2. by name criteria `?name=apple`
+         3. if sku start with a pattern `?skus[]=MT-&skus[]=HJM`, this criteria will return any products where the sku start with any of those patterns.
+      3. Pagination
+         1. `?page=2`
+      4. Sorting
+         1. `?sortBy=price` (other options 'name', 'sku')
+      5. Limit
+         1. `?limit=20`, options: 10 | 20 | 50 | 100
+         2. **Max value allowed:** 150
 2. `/orders`
    1. Create an order.
    2. Update an order.
@@ -31,7 +41,7 @@ Authentication
 
 Implement JWT as the authentication strategy.
 
-Project dockerized contains a MongoDB instance and the Node.js API.
+✅ Project dockerized contains a MongoDB instance and the Node.js API.
 
 ## Configuration
 
@@ -57,17 +67,16 @@ Then set each variable on `.env.local`:
 
 - `MONGODB_URI` should be the MongoDB connection string you got from step 1.
 
-### Step 3. Run Next.js in development mode
+### Step 3. Run API in development mode
 
 ```bash
 npm install
-npm run dev
-# or
-yarn install
-yarn dev
-# or
-pnpm install
-pnpm dev
+npm run start:dev
 ```
 
 Your app should be up and running on [http://localhost:3000](http://localhost:3000)!
+
+## Working with docker
+
+`docker compose -p api-nestjs-mongodb up -d`
+`docker compose -p api-nestjs-mongodb up -d --build --force-recreate golang-jobs-api`
