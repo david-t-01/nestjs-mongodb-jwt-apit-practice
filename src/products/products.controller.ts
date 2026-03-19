@@ -1,6 +1,8 @@
 import {
   Body,
   Controller,
+  Get,
+  Param,
   ParseFilePipe,
   Post,
   UploadedFile,
@@ -40,5 +42,15 @@ export class ProductsController {
     file: Express.Multer.File,
   ): Promise<Product> {
     return this.productsService.create(dto, file);
+  }
+
+  @Get(':id')
+  @ApiResponse({
+    status: 200,
+    description: 'The found record',
+    type: Product,
+  })
+  async findOne(@Param('id') id: string): Promise<Product | null> {
+    return this.productsService.findOne(id);
   }
 }

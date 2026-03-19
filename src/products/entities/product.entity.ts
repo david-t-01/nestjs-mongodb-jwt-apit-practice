@@ -4,7 +4,29 @@ import { HydratedDocument, Types } from 'mongoose';
 
 export type ProductDocument = HydratedDocument<Product>;
 
-@Schema({ timestamps: true })
+@Schema({
+  timestamps: true,
+  toJSON: {
+    virtuals: true,
+    transform: (_doc: unknown, ret: Record<string, unknown>) => {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+      delete ret.createdAt;
+      delete ret.updatedAt;
+    },
+  },
+  toObject: {
+    virtuals: true,
+    transform: (_doc: unknown, ret: Record<string, unknown>) => {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v;
+      delete ret.createdAt;
+      delete ret.updatedAt;
+    },
+  },
+})
 export class Product {
   @ApiProperty({ example: 'Wireless Mouse', description: 'The name of the product' })
   @Prop({ required: true })
@@ -24,6 +46,10 @@ export class Product {
   @ApiProperty({ example: 29.99, description: 'The price of the product' })
   @Prop({ required: true })
   price: number;
+
+  @ApiProperty({ example: 'active', description: 'The status of the product' })
+  @Prop({ required: true, default: 'active' })
+  status: string;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
