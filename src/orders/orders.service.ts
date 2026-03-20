@@ -1,10 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Product, ProductDocument } from '@/products/entities/product.entity';
+
 import { CreateOrderDto } from '@/orders/dto/create-order.dto';
 import { UpdateOrderDto } from '@/orders/dto/update-order.dto';
 import { Order, OrderDocument } from '@/orders/entities/order.entity';
+import { Product, ProductDocument } from '@/products/entities/product.entity';
+
 import { calculateTotal } from './utils/ordersUtils';
 
 @Injectable()

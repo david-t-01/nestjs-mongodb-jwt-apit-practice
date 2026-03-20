@@ -1,4 +1,5 @@
 import { Types } from 'mongoose';
+
 import { calculateTotal, OrderProductItem } from '@/orders/utils/ordersUtils';
 
 function createMockProductModel(products: { _id: Types.ObjectId; price: number }[]) {

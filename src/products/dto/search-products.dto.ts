@@ -1,5 +1,5 @@
-import { IsArray, IsEnum, IsIn, IsInt, IsOptional, IsString, Min, Validate } from 'class-validator';
 import { Transform, Type } from 'class-transformer';
+import { IsArray, IsEnum, IsIn, IsInt, IsOptional, IsString, Min, Validate } from 'class-validator';
 
 export enum StatusField {
   ACTIVE = 'active',

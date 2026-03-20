@@ -1,8 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
 import { Types } from 'mongoose';
-import { OrdersService } from '@/orders/orders.service';
+
 import { Order } from '@/orders/entities/order.entity';
+import { OrdersService } from '@/orders/orders.service';
 import { Product } from '@/products/entities/product.entity';
 
 const PRODUCT_A_ID = new Types.ObjectId();
