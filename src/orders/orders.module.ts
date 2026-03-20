@@ -3,29 +3,32 @@ import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { AuthGuard } from '@/auth/auth.guard';
+import { Product, ProductSchema } from '@/products/entities/product.entity';
 
-import { StorageModule } from '../storage/storage.module';
-import { Product, ProductSchema } from './entities/product.entity';
-import { ProductsController } from './products.controller';
-import { ProductsService } from './products.service';
+import { Order, OrderSchema } from './entities/order.entity';
+import { OrdersController } from './orders.controller';
+import { OrdersService } from './orders.service';
 
 @Module({
-  controllers: [ProductsController],
+  controllers: [OrdersController],
   imports: [
     MongooseModule.forFeature([
+      {
+        name: Order.name,
+        schema: OrderSchema,
+      },
       {
         name: Product.name,
         schema: ProductSchema,
       },
     ]),
-    StorageModule,
   ],
   providers: [
-    ProductsService,
+    OrdersService,
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
   ],
 })
-export class ProductsModule {}
+export class OrdersModule {}

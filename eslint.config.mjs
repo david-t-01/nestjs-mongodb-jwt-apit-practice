@@ -44,7 +44,8 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/unbound-method': 'warn',
 
-      // Let Prettier handle line-length wrapping; just enforce consistency
+      "@stylistic/padded-blocks": ["error", "never"],
+      
       '@stylistic/object-curly-newline': ['error', {
         consistent: true,
         multiline: true,
@@ -73,6 +74,16 @@ export default tseslint.config(
         type: 'alphabetical',
         order: 'asc',
       }],
+
+      "perfectionist/sort-imports": [
+      "error",
+        {
+          "type": "alphabetical",
+          "order": "asc",
+          "newlinesBetween": 1,
+          "internalPattern": ["^@/.*"]
+        }
+      ]
     },
   },
 );
