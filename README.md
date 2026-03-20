@@ -2,6 +2,8 @@
 
 **!IMPORTANT:!** This project assume you use `nvm` as node version manager, in case you don't want to use it, you will need to update the husky hooks.
 
+Nest CLI is also recommended to use ([more info](https://docs.nestjs.com/cli/overview)).
+
 ## Objective
 
 Develop a Node.js API using NestJS, connected to MongoDB with @nestjs/mongoose, and implement JWT for authentication.
@@ -11,7 +13,7 @@ Develop a Node.js API using NestJS, connected to MongoDB with @nestjs/mongoose, 
 Create data Models
 
 1. ✅ Product: must include name, SKU, picture (file upload), and price.
-2. Order: must include an identifier, client name, total, and the list of products.
+2. ✅ Order: must include an identifier, client name, total, and the list of products.
 
 Endpoints
 
@@ -44,7 +46,7 @@ Endpoints
 
 Authentication
 
-Implement JWT as the authentication strategy.
+✅ Implement JWT as the authentication strategy.
 
 ✅ Project dockerized contains a MongoDB instance and the Node.js API.
 
@@ -81,7 +83,9 @@ npm run start:dev
 
 Your app should be up and running on [http://localhost:3000](http://localhost:3000)!
 
-## todos
+## TODOs
 
 - [] handle internal errors
   - [] case when sku or order identifier already exist
+- [] CRUD for users
+- [] update authGuard to provide a mechanism for declaring routes as public
