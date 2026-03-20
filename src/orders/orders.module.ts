@@ -1,6 +1,10 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
+
+import { AuthGuard } from '@/auth/auth.guard';
 import { Product, ProductSchema } from '@/products/entities/product.entity';
+
 import { Order, OrderSchema } from './entities/order.entity';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
@@ -19,6 +23,12 @@ import { OrdersService } from './orders.service';
       },
     ]),
   ],
-  providers: [OrdersService],
+  providers: [
+    OrdersService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class OrdersModule {}

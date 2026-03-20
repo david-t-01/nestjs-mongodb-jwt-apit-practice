@@ -9,7 +9,7 @@ export class UsersService {
     {
       password: 'changeme',
       userId: 1,
-      username: 'john',
+      username: 'david',
     },
     {
       password: 'guess',
