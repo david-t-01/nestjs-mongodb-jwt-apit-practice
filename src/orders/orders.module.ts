@@ -21,5 +21,4 @@ import { OrdersService } from './orders.service';
   ],
   providers: [OrdersService],
 })
-// eslint-disable-next-line prettier/prettier
-export class OrdersModule { }
+export class OrdersModule {}

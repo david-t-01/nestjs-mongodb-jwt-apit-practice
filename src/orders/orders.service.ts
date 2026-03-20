@@ -12,8 +12,7 @@ export class OrdersService {
   constructor(
     @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
     @InjectModel(Product.name) private productModel: Model<ProductDocument>,
-    // eslint-disable-next-line prettier/prettier
-  ) { }
+  ) {}
 
   async create(dto: CreateOrderDto): Promise<Order> {
     const items = dto.products.map((p) => ({
