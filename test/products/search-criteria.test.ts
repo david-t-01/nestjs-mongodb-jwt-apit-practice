@@ -1,7 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
-import { ProductsService } from '@/products/products.service';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { Product } from '@/products/entities/product.entity';
+import { ProductsService } from '@/products/products.service';
 import { StorageService } from '@/storage/storage.service';
 
 function createMockModel() {

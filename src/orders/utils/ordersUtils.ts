@@ -1,5 +1,6 @@
-import { ProductDocument } from '@/products/entities/product.entity';
 import { Model, Types } from 'mongoose';
+
+import { ProductDocument } from '@/products/entities/product.entity';
 
 export interface OrderProductItem {
   productId: Types.ObjectId;

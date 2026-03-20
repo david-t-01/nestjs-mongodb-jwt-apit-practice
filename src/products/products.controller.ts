@@ -14,11 +14,12 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { memoryStorage } from 'multer';
+
 import { ImageFileValidationPipe } from '../storage/pipes/image-file-validation.pipe';
 import { CreateProductDto } from './dto/create-product.dto';
+import { FindProductsQueryDto } from './dto/search-products.dto';
 import { Product } from './entities/product.entity';
 import { ProductsService } from './products.service';
-import { FindProductsQueryDto } from './dto/search-products.dto';
 
 @ApiBearerAuth()
 @ApiTags('products')
