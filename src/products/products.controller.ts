@@ -1,10 +1,8 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
   Param,
-  ParseFilePipe,
   Post,
   Query,
   UploadedFile,
@@ -79,6 +77,6 @@ export class ProductsController {
       return this.productsService.filter({ limit, page, sku, sortBy, status });
     }
 
-    throw new BadRequestException('Bad request / Invalid search');
+    return this.productsService.findAll({ limit: 10, page: 1, status: 'active' });
   }
 }

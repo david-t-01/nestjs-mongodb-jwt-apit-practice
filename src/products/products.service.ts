@@ -76,6 +76,11 @@ export class ProductsService {
     return this.applyPagination(query, { limit, page, sortBy });
   }
 
+  async findAll(params: FilterParams = {}): Promise<Product[]> {
+    const { limit = 10, page = 1, sortBy, status = 'active' } = params;
+    return this.applyPagination({ status }, { limit, page, sortBy });
+  }
+
   async filter(params: FilterParams = {}): Promise<Product[]> {
     const { limit, page, sku, sortBy, status = 'active' } = params;
     const query: Record<string, any> = {};
